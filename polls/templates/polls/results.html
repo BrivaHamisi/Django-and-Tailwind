@@ -1,0 +1,31 @@
+{% load static tailwind_tags %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% tailwind_css %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Results: {{ question.question_text }}</title>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+    <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-6">
+            <h1 class="text-3xl font-bold text-gray-900 text-center mb-6">{{ question.question_text }}</h1>
+            <ul class="space-y-4">
+                {% for choice in question.choice_set.all %}
+                    <li class="p-4 bg-gray-50 rounded-lg shadow-sm flex items-center justify-between hover:bg-gray-100 transition duration-150 ease-in-out">
+                        <span class="text-gray-800 text-lg font-medium">{{ choice.choice_text }}</span>
+                        <span class="text-indigo-600 text-lg font-semibold">{{ choice.votes }} vote{{ choice.votes|pluralize }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="mt-6 text-center">
+                <a href="{% url 'polls:detail' question.id %}"
+                   class="inline-flex items-center px-6 py-2 bg-indigo-600 text-white text-lg font-semibold rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150">
+                    Vote Again?
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

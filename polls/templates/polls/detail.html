@@ -7,21 +7,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ question.question_text }}</title>
 </head>
-<body class="bg-gray-50 font-sans antialiased">
+<body class="bg-gray-100 font-sans antialiased">
     <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div class="max-w-2xl w-full bg-white rounded-lg shadow-md p-8">
-            <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center leading-tight">
-                {{ question.question_text }}
-            </h1>
-            <ul class="space-y-4">
-                {% for choice in question.choice_set.all %}
-                    <li class="flex items-center p-4 bg-gray-100 rounded-md hover:bg-gray-200 transition duration-200">
-                        <span class="flex-shrink-0 w-3 h-3 bg-indigo-500 rounded-full mr-3"></span>
-                        <span class="text-gray-700 text-lg font-medium">{{ choice.choice_text }}</span>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+        <form action="{% url 'polls:vote' question.id %}" method="post" class="max-w-md w-full bg-white rounded-xl shadow-lg p-6">
+            {% csrf_token %}
+            <fieldset class="space-y-6">
+                <legend>
+                    <h1 class="text-3xl font-bold text-gray-900 text-center mb-4">{{ question.question_text }}</h1>
+                </legend>
+                {% if error_message %}
+                    <p class="text-red-600 text-sm font-medium text-center bg-red-50 p-2 rounded-md">
+                        <strong>{{ error_message }}</strong>
+                    </p>
+                {% endif %}
+                <div class="space-y-4">
+                    {% for choice in question.choice_set.all %}
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-150 ease-in-out cursor-pointer group">
+                            <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}"
+                                   class="h-5 w-5 text-indigo-600 border-gray-300 focus:ring-indigo-500 cursor-pointer">
+                            <label for="choice{{ forloop.counter }}"
+                                   class="ml-3 text-gray-800 text-lg font-medium cursor-pointer group-hover:text-indigo-700 transition-colors">
+                                {{ choice.choice_text }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </fieldset>
+            <div class="mt-6 text-center">
+                <input type="submit" value="Vote"
+                       class="inline-flex items-center px-6 py-2 bg-indigo-600 text-white text-lg font-semibold rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 cursor-pointer">
+            </div>
+        </form>
     </div>
 </body>
 </html>
